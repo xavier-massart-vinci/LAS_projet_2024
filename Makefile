@@ -9,11 +9,24 @@ server : server.o utils_v1.o
 client : client.o utils_v1.o
 	$(CC) $(CCFLAGS) -o client client.o utils_v1.o
 
+
+
 server.o: server.c utils_v1.h messages.h
 	$(CC) $(CCFLAGS) -c server.c 
 
 client.o: client.c utils_v1.h messages.h
 	$(CC) $(CCFLAGS) -c client.c
+
+
+
+jeu.o: jeu.c utils_v1.h messages.h
+	$(CC) $(CCFLAGS) -c jeu.c
+
+network.o: network.c utils_v1.h messages.h
+	$(CC) $(CCFLAGS) -c network.c
+
+ipc.o: ipc.c utils_v1.h messages.h
+	$(CC) $(CCFLAGS) -c ipc.c
 
 utils_v1.o: utils_v1.c utils_v1.h
 	$(CC) $(CCFLAGS) -c utils_v1.c 
