@@ -10,7 +10,6 @@ typedef struct
     Code code;
 } Message;
 
-
 typedef enum  {
     INSCRIPTION_REQUETE,
     INSCRIPTION_OK,
