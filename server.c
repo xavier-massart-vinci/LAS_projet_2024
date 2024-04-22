@@ -7,8 +7,6 @@
 #include <unistd.h>
 #include <sys/socket.h>
 
-
-
 #include "utils_v1.h"
 #include "messages.h"
 #include "network.h"
@@ -21,7 +19,6 @@ Client tabClients[MAX_PLAYERS];
 volatile sig_atomic_t end_inscriptions = 0;
 
 
-
 void endServerHandler(int sig)
 {
     end_inscriptions = 1;
@@ -29,12 +26,11 @@ void endServerHandler(int sig)
 
 void disconnect_players(Client *tabClients, int nbPlayers)
 {
-    for (int i = 0; i < nbPlayers; i++)
+    for (int i = 0; i < nbPlayers; i++) {
         sclose(tabClients[i].sockfd);
+    }
     return;
 }
-
-
 
 int main(int argc, char const *argv[])
 {
@@ -118,3 +114,9 @@ int main(int argc, char const *argv[])
     */
     return 0;
 }
+
+// pid_t createChildProcess();
+
+// int[] createTiles();
+
+// int randomTile();
