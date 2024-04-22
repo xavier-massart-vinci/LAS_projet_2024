@@ -1,17 +1,29 @@
 #ifndef _MESSAGE_H_
 #define _MESSAGE_H_
 
-#define SIZE_PSEUDO 255
-#define MAX_JOUEUR 4
+#define SERVER_PORT 9502
+#define SERVER_IP "127.0.0.1" /* localhost */
+#define MAX_PSEUDO 255
+#define MAX_PLAYERS 4
+#define TIME_INSCRIPTION 15
 
-typedef struct 
+
+
+typedef struct Client
 {
-    char pseudo[SIZE_PSEUDO];
-    Code code;
-} Message;
+    int sockfd;
+    int pipefd;
+    int pid;
+} Client;
 
-typedef enum  {
-    INSCRIPTION_REQUETE,
+typedef struct Player
+{
+    char pseudo[MAX_PSEUDO];
+    int score;
+} Player;
+
+typedef enum Code  {
+    INSCRIPTION_REQUEST,
     INSCRIPTION_OK,
     INSCRIPTION_KO,
     TUILE_PIOCHEE,
@@ -20,23 +32,23 @@ typedef enum  {
     RANK
 } Code;
 
-typedef struct
+typedef struct TabPlayer
 {
-    int sockfd;
-    int pipefd;
-    int pid;
-} Client;
+    Player tabPlayer[MAX_PLAYERS];
+    int nbrPlayer;
+} TabPlayer;
 
-typedef struct 
+typedef struct Message
 {
-    char pseudo[SIZE_PSEUDO];
-    int score;
-} Joueur;
+    
+    Code code;
+    char pseudo[MAX_PSEUDO];
+    int tileTake;
+    int playerScore;
+    TabPlayer tabPlayer;
+} Message;
 
-typedef struct 
-{
-    Joueur tabjoueurs[MAX_JOUEUR];
-    int nbrJoueur;
-} TabJoueurs;
+
+
 
 #endif
