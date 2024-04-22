@@ -6,12 +6,10 @@
 #define MAX_PSEUDO 255
 #define MAX_PLAYERS 4
 #define TIME_INSCRIPTION 15
-<<<<<<< HEAD
 #define SEM_KEY 123
 #define PERM 0600
-=======
 #define ROUNDS 20
->>>>>>> 7ddc784d631e629f8799498a24d3de03f01587a5
+
 
 
 
