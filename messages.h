@@ -6,6 +6,8 @@
 #define MAX_PSEUDO 255
 #define MAX_PLAYERS 4
 #define TIME_INSCRIPTION 15
+#define SEM_KEY 123
+#define PERM 0600
 
 
 
