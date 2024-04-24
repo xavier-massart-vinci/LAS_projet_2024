@@ -26,7 +26,7 @@ network.o: network.c utils_v1.h messages.h
 	$(CC) $(CCFLAGS) -c network.c
 
 ## ipc
-ipc.o: ipc.c utils_v1.h messages.h ipc.hs
+ipc.o: ipc.c utils_v1.h messages.h ipc.h
 	$(CC) $(CCFLAGS) -c ipc.c
 
 ## utils
