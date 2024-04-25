@@ -89,8 +89,6 @@ int main(int argc, char const *argv[])
     }
 
 
-
-/*
     printf("FIN DES INSCRIPTIONS\n");
     if (nbPLayers != MAX_PLAYERS)
     {
@@ -110,8 +108,28 @@ int main(int argc, char const *argv[])
         msg.code = START_GAME;
         for (i = 0; i < nbPLayers; i++)
             swrite(tabClients[i].sockfd, &msg, sizeof(msg));
+
+        // pour tout les clients
+        for (int i = 0; i < nbPLayers; ++i)
+        {
+            // cree un pipe 
+            // cree le fils 
+            // placer le pipe et le process_id dans le tableau tabClients
+        }
+
+
+        // creation des tuiles (tableau ) !!! 31 = joker !!!
+
+
+        // tirage d'une tuile au hasard
+            // envoie de la tuile a tout les fils via le pipe
+
+        // attente que tout les fils on envoyer leur répose
+
+        // boucle 20 x sur ligne 123
+
     }
-    */
+    
     return 0;
 }
 
