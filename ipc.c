@@ -1,15 +1,21 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/socket.h>
 
-
-#include "ipc.h"
-#include "messages.h"
 #include "utils_v1.h"
+#include "messages.h"
+#include "network.h"
+#include "jeu.h"
 
 
 
 
-
+/*
 
 int semInit(){
     return sem_create(SEM_KEY, 1, PERM, 0);
@@ -47,3 +53,4 @@ void sortPlayerScore(){
    qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
 }
 
+*/

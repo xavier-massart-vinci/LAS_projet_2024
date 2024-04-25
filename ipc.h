@@ -1,4 +1,16 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/socket.h>
+
 #include "utils_v1.h"
+#include "messages.h"
+#include "network.h"
+#include "jeu.h"
 
 
 //POST: creates a semaphore associated with key,

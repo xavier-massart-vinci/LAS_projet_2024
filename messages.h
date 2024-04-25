@@ -17,8 +17,9 @@
 typedef struct Client
 {
     int sockfd;
-    int pipefd;
-    int pid;
+    int pipefdEcriture[2];
+    int pipefdLecture[2];
+    int childPid;
 } Client;
 
 typedef struct Player
@@ -33,6 +34,8 @@ typedef enum Code  {
     INSCRIPTION_KO,
     TUILE_PIOCHEE,
     TUILE_PLACE,
+    CANCEL_GAME,
+    START_GAME,
     SCORE,
     RANK
 } Code;

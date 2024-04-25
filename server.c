@@ -13,10 +13,11 @@
 #include "jeu.h"
 
 
-
 /*** globals variables ***/
 Client tabClients[MAX_PLAYERS];
 volatile sig_atomic_t end_inscriptions = 0;
+void childProcess(void *arg1);
+
 
 
 void endServerHandler(int sig)
@@ -90,7 +91,7 @@ int main(int argc, char const *argv[])
 
 
     printf("FIN DES INSCRIPTIONS\n");
-    if (nbPLayers != MAX_PLAYERS)
+    if (nbPLayers < 2)
     {
         printf("PARTIE ANNULEE .. PAS ASSEZ DE JOUEURS\n");
         msg.code = CANCEL_GAME;
@@ -112,13 +113,32 @@ int main(int argc, char const *argv[])
         // pour tout les clients
         for (int i = 0; i < nbPLayers; ++i)
         {
-            // cree un pipe 
-            // cree le fils 
-            // placer le pipe et le process_id dans le tableau tabClients
+           // Création des pipes
+           // Parent: parent -> child
+           spipe(tabClients[i].pipefdEcriture);
+
+           // Child: child -> parent
+           spipe(tabClients[i].pipefdLecture);
+
+            // Création d'un processus fils
+            pid_t childPid = fork_and_run1(childProcess, &tabClients[i]);
+
+            // Configuration des pipes
+            sclose(tabClients[i].pipefdEcriture[0]);
+            sclose(tabClients[i].pipefdLecture[1]);
+            tabClients[i].childPid = childPid;
         }
 
 
-        // creation des tuiles (tableau ) !!! 31 = joker !!!
+        // creation des tuiles (tableau ) !!! 40 = joker (tab commence à 0) !!!
+        int tilesTab[TILES_TAB_SIZE];
+        createTiles(tilesTab);
+
+        for (int i = 0; i < NB_ROUND; ++i)
+        {
+            getRandomTile(tilesTab, TILES_TAB_SIZE - i);
+
+        }
 
 
         // tirage d'une tuile au hasard
@@ -133,8 +153,15 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-// pid_t createChildProcess();
+void childProcess(void *arg1)
+{
+    Client *client = arg1;
 
-// int[] createTiles();
+    client->childPid = getpid();
 
-// int randomTile();
+   // Configuration des pipes
+   sclose(client->pipefdEcriture[1]);
+   sclose(client->pipefdLecture[0]);
+}
+
+//points
