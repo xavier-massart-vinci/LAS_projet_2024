@@ -19,7 +19,7 @@ int shmInit(){
     return sshmget(SHEM_KEY, sizeof(TabPlayer), IPC_CREAT | IPC_EXCL | PERM);
 }
 
-void getTabPlayer(TabPlayer* tab){
+TabPlayer* getTabPlayer(TabPlayer* tab){
     int shm_id = sshmget(SHEM_KEY, sizeof(TabPlayer), IPC_CREAT | IPC_EXCL | PERM);
 
     return (TabPlayer*) sshmat(shm_id);
@@ -43,12 +43,7 @@ void sortPlayerScore(){
     TabPlayer* tab = getTabPlayer(TabPlayer* tab);
 
     Player* tabPlayer =  tab->tabPlayer;
-
-
+    
    qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
-
-
-
-
 }
 
