@@ -94,9 +94,9 @@ void sortPlayerScore(){
 
     TabPlayer* tab = getTabPlayer();
 
-    Player* tabPlayer =  tab->tabPlayer;
+    //Player* tabPlayer =  tab->tabPlayer;
     
-    qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
+    //qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
 
 
    // fils peuvent lire

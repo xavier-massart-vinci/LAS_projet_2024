@@ -9,7 +9,6 @@
 #define SEM_KEY 123
 #define SHEM_KEY 456
 #define PERM 0600
-#define ROUNDS 20
 
 
 

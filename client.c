@@ -79,6 +79,29 @@ int main(int argc, char const *argv[])
         while ((c = getchar()) != '\n' && c != EOF);
     }
 
+    // calcule score
+    //TODO
+
+    // send SCORE
+    msg.code = SCORE;
+    msg.playerScore = 69;
+    swrite(sockfd, &msg, sizeof(msg));
+
+    // wait RANK
+    sread(sockfd, &msg, sizeof(msg));
+    TabPlayer tab = msg.tabPlayer;
+
+    for (int i = 0; i < tab.nbrPlayer; ++i)
+    {
+        Player player = (tab.tabPlayer)[i];
+        printf("Pseudo: %s Score: %d \n", player.pseudo, player.score);
+
+    }
+
+
+
+
+
     /* end */
     sclose(sockfd);
     return 0;

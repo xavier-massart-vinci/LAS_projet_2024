@@ -145,6 +145,8 @@ int main(int argc, char const *argv[])
         int tilesTab[TILES_TAB_SIZE];
         createTiles(tilesTab);
 
+        int nbPlayersScoreSended = 0;
+
         for (int i = 0; i < NB_ROUND; ++i)
         {
             msg.code = TUILE_PIOCHEE;
@@ -166,18 +168,49 @@ int main(int argc, char const *argv[])
                         // wait TUILE_PLACEE
                         sread(tabClients[j].pipefdChild[0], &msg, sizeof(msg)); 
                         printf("%d\n", msg.tileTake);
-                        nbPlayersPlayed++;
+                        if(msg.code == TUILE_PLACEE){
+                            nbPlayersPlayed++;
+                        }
+
+
+                        // recuppere les score envoyer quand tout le monde a pas envoyer sont derniere tuile placer
+                        if(msg.code == SCORE){
+                            addPlayerScore(j, msg.playerScore);
+                            nbPlayersScoreSended++;
+
+                        }
+                        
                     }
                 }
             }
 
         }
 
+        /// ------------------------------------------------ ///
 
-            // envoie de la tuile a tout les fils via le pipe
+        printf("%d\n", nbPLayers);
+        
+        // reccupere le rest des scores 
+        while (nbPlayersScoreSended != nbPLayers) {
+            poll(fds, nbPLayers, 0);
 
-        // attente que tout les fils on envoyer leur répose
+            for (int j = 0; j < nbPLayers; ++j)
+            {
+                if (fds[j].revents & POLLIN) {
+                    sread(tabClients[j].pipefdChild[0], &msg, sizeof(msg)); 
+                    addPlayerScore(j, msg.playerScore);
+                    nbPlayersScoreSended++;
+                }
+            }
+        }
 
+        printf("CALCULE DES SCORE ... \n");
+        sortPlayerScore();
+        
+        for (int i = 0; i < nbPLayers; ++i)
+        {
+            swaitpid(-1, NULL, 0);
+        }
     }
     
     return 0;
@@ -212,7 +245,7 @@ void childProcess(void *arg1)
 
 
     // Score 
-    /*
+    
     // wait SCORE
     sread(client->sockfd, &msg, sizeof(msg));
     // send SCORE
@@ -222,8 +255,16 @@ void childProcess(void *arg1)
     sread(client->pipefdParent[0], &msg, sizeof(msg));
 
     // send RANK
+    printf("Try to read\n");
     TabPlayer* tabPlayer = readTabPlayer();
-    msg.tabPlayer = tabPlayer;
+    printf("read\n");
+    for (int i = 0; i < tabPlayer->nbrPlayer; ++i)
+    {
+        Player player = (tabPlayer->tabPlayer)[i];
+        printf("Pseudo: %s Score: %d \n", player.pseudo, player.score);
+
+    }
+    msg.tabPlayer = *tabPlayer;
     swrite(client->sockfd, &msg, sizeof(msg));
-    */
+    
 }
