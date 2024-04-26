@@ -55,6 +55,30 @@ int main(int argc, char const *argv[])
     /* wait start of game or cancel */
     sread(sockfd, &msg, sizeof(msg));
 
+    if (msg.code == CANCEL_GAME) {
+        printf("Partie annulée par manque de joueurs");
+        sclose(sockfd);
+        return 0;
+    }
+
+    for (int i = 0; i < NB_ROUND; ++i)
+    {
+        Message msg;
+        int tilePlayed;
+
+        // wait TUILE_PIOCHEE
+        sread(sockfd, &msg, sizeof(msg));
+
+        printf("\033[1;36mTuile %d piochée, veuillez choisir une case\033[0m\n", msg.tileTake);
+        char c = scanf("Tuile choisie : %d", &tilePlayed);
+
+        // send TUILE_PLACEE
+        msg.code = TUILE_PLACEE;
+        swrite(sockfd, &msg, sizeof(msg));
+
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+
     /* end */
     sclose(sockfd);
     return 0;
