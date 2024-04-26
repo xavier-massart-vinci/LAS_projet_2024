@@ -11,6 +11,7 @@
 #include "messages.h"
 #include "network.h"
 #include "jeu.h"
+#include "ipc.h"
 
 
 /*** globals variables ***/
@@ -30,16 +31,21 @@ void disconnect_players(Client *tabClients, int nbPlayers)
     for (int i = 0; i < nbPlayers; i++) {
         sclose(tabClients[i].sockfd);
     }
+
+    clearSharedMemory();
     return;
 }
 
 int main(int argc, char const *argv[])
 {
+    // create IPCs
+    semInit();
+    shmInit();
+
     int sockfd, newsockfd, i;
     int nbPLayers = 0;
 
     Message msg;
-    // char winnerName[256];
 
     ssigaction(SIGALRM, endServerHandler);
 
@@ -64,8 +70,8 @@ int main(int argc, char const *argv[])
             {
                 printf("Inscription demandée par le joueur : %s\n", msg.pseudo);
 
-                // strcpy(tabClients[i].pseudo, msg.messageText);
-                // Shared Memory push
+                addPlayer(msg.pseudo);
+
                 tabClients[i].sockfd = newsockfd;
                 i++;
 
@@ -187,9 +193,13 @@ void childProcess(void *arg1)
     sclose(client->pipefdParent[1]);
     sclose(client->pipefdChild[0]);
 
+    Message msg;
+
+
+    // Game Loop
     for (int i = 0; i < NB_ROUND; ++i)
     {
-        Message msg;
+        
         // wait TUILE_PIOCHEE
         sread(client->pipefdParent[0], &msg, sizeof(msg));
         // send TUILE_PIOCHEE
@@ -199,6 +209,21 @@ void childProcess(void *arg1)
         // send TUILE_PLACEE
         swrite(client->pipefdChild[1], &msg, sizeof(msg));
     }
-}
 
-//points
+
+    // Score 
+    /*
+    // wait SCORE
+    sread(client->sockfd, &msg, sizeof(msg));
+    // send SCORE
+    swrite(client->pipefdChild[1], &msg, sizeof(msg)); 
+
+    // wait RANK
+    sread(client->pipefdParent[0], &msg, sizeof(msg));
+
+    // send RANK
+    TabPlayer* tabPlayer = readTabPlayer();
+    msg.tabPlayer = tabPlayer;
+    swrite(client->sockfd, &msg, sizeof(msg));
+    */
+}
