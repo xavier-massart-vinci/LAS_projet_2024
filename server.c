@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <sys/socket.h>
 
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
 #include "utils_v1.h"
 #include "messages.h"
 #include "network.h"
@@ -206,11 +209,16 @@ int main(int argc, char const *argv[])
 
         printf("CALCULE DES SCORE ... \n");
         sortPlayerScore();
-        
+
+        int sem_id = sem_get(SEM_KEY, 1);
+        printf("Server Valeur : %d\n", semctl(sem_id, 0, GETVAL));
+        /*
         for (int i = 0; i < nbPLayers; ++i)
         {
-            swaitpid(-1, NULL, 0);
+            swait(NULL);
         }
+        */
+        
     }
     
     return 0;
@@ -254,17 +262,24 @@ void childProcess(void *arg1)
     // wait RANK
     sread(client->pipefdParent[0], &msg, sizeof(msg));
 
-    // send RANK
-    printf("Try to read\n");
-    TabPlayer* tabPlayer = readTabPlayer();
-    printf("read\n");
-    for (int i = 0; i < tabPlayer->nbrPlayer; ++i)
-    {
-        Player player = (tabPlayer->tabPlayer)[i];
-        printf("Pseudo: %s Score: %d \n", player.pseudo, player.score);
 
-    }
+
+
+    // send RANK;
+
+    int sem_id = sem_get(SEM_KEY, 1);
+
+    // blocked wait server
+    sem_down0(sem_id);
+    //printf("Avant Valeur : %d\n", semctl(sem_id, 0, GETVAL));
+    TabPlayer* tabPlayer = getTabPlayer();
+    //printf("Apres Valeur : %d\n", semctl(sem_id, 0, GETVAL));
+
+    //printf("Read to send %d \n", tabPlayer->nbrPlayer);
     msg.tabPlayer = *tabPlayer;
     swrite(client->sockfd, &msg, sizeof(msg));
-    
+
+    sshmdt(tabPlayer);
+
+
 }

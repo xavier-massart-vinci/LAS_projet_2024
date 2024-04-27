@@ -68,6 +68,8 @@ TabPlayer* readTabPlayer(){
 
     TabPlayer* tab = getTabPlayer();
 
+    sem_up0(sem_id);
+
     sshmdt(tab);
 
     return tab;
@@ -98,10 +100,11 @@ void sortPlayerScore(){
     
     //qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
 
-
+    printf("nbPlayer %d\n", tab->nbrPlayer);
    // fils peuvent lire
    for (int i = 0; i < tab->nbrPlayer; ++i)
    {
+        printf("----------------->sem up\n");
         sem_up0(sem_id);
    }
 
