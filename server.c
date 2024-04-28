@@ -266,7 +266,5 @@ void childProcess(void *arg1)
 
     sshmdt(tabPlayer);
 
-
-    exit(0);
 }
 
