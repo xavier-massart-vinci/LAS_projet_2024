@@ -1,14 +1,28 @@
 #ifndef _MESSAGE_H_
 #define _MESSAGE_H_
 
-#define SERVER_PORT 9502
-#define SERVER_IP "127.0.0.1" /* localhost */
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <string.h>
+#include <signal.h>
+#include <unistd.h>
+#include <time.h>
+
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/socket.h>
+
+#include "utils_v1.h"
+
+
+
 #define MAX_PSEUDO 255
 #define MAX_PLAYERS 4
 #define TIME_INSCRIPTION 15
-#define SEM_KEY 123
-#define SHEM_KEY 456
-#define PERM 0600
+
+
 
 
 

@@ -1,17 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/socket.h>
-
-
-#include "utils_v1.h"
-#include "network.h"
+#include "ipc.h"
 #include "jeu.h"
-#include "messages.h"
+#include "network.h"
 
 
 int main(int argc, char const *argv[])

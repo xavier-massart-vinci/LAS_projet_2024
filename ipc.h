@@ -1,25 +1,12 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/socket.h>
+#ifndef _IPC_H_
+#define _IPC_H_
 
-#include "utils_v1.h"
 #include "messages.h"
-#include "network.h"
-#include "jeu.h"
 
+#define SEM_KEY 123
+#define SHEM_KEY 456
 
-
-//TODO
-
-
-
-
-
+#define PERM 0600
 
 
 //POST: creates a semaphore associated with key,
@@ -41,5 +28,7 @@ void sortPlayerScore();
 
 void clearPlayerScore();
 void clearSharedMemory();
+
+#endif
 
 

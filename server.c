@@ -1,21 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/socket.h>
-
-#include <sys/ipc.h>
-#include <sys/sem.h>
-
-#include "utils_v1.h"
-#include "messages.h"
-#include "network.h"
-#include "jeu.h"
 #include "ipc.h"
-
+#include "jeu.h"
+#include "network.h"
 
 /*** globals variables ***/
 Client tabClients[MAX_PLAYERS];
@@ -148,82 +133,69 @@ int main(int argc, char const *argv[])
         int tilesTab[TILES_TAB_SIZE];
         createTiles(tilesTab);
 
-        int nbPlayersScoreSended = 0;
 
-        for (int i = 0; i < NB_ROUND; ++i)
-        {
-            msg.code = TUILE_PIOCHEE;
-            msg.tileTake = getRandomTile(tilesTab, TILES_TAB_SIZE - i);
 
-            for (int j = 0; j < nbPLayers; ++j)
+ // Main
+        // current game round
+        int currentRound = 0;
+        // the number of the current player have playeing in the current round
+        int currentPlayerPlayed = 0;
+        // the number of player (who have send they score)
+        int nbScoreSended = 0;
+
+        // init the first round
+        selectAndSendTile(tabClients, nbPLayers, tilesTab, currentRound);
+        
+        while (currentRound != NB_ROUND || nbScoreSended != nbPLayers){
+            spoll(fds, nbPLayers, 0);
+
+            for (int i = 0; i < nbPLayers; ++i)
             {
-                // send TUILE_PIOCHEE
-                swrite(tabClients[j].pipefdParent[1], &msg, sizeof(msg));
-            }
+                // listenner of filedescriptor
+                if (fds[i].revents & POLLIN) {
+                    // read the current reauets message
+                    sread(tabClients[i].pipefdChild[0], &msg, sizeof(msg)); 
 
-            int nbPlayersPlayed = 0;
-            while (nbPlayersPlayed != nbPLayers) {
-                spoll(fds, nbPLayers, 0);
 
-                for (int j = 0; j < nbPLayers; ++j)
-                {
-                    if (fds[j].revents & POLLIN) {
-                        // wait TUILE_PLACEE
-                        sread(tabClients[j].pipefdChild[0], &msg, sizeof(msg)); 
-                        printf("%d\n", msg.tileTake);
-                        if(msg.code == TUILE_PLACEE){
-                            nbPlayersPlayed++;
+                    if(msg.code == TUILE_PLACEE){
+                        currentPlayerPlayed++;
+
+                        // end of the current round
+                        if(currentPlayerPlayed == nbPLayers){
+                            currentRound++;
+                            currentPlayerPlayed = 0;
+                            selectAndSendTile(tabClients, nbPLayers, tilesTab, currentRound);
                         }
-
-                        // recuppere les score envoyer quand tout le monde a pas envoyer sont derniere tuile placer
-                        if(msg.code == SCORE){
-                            addPlayerScore(j, msg.playerScore);
-                            nbPlayersScoreSended++;
-
-                        }
-                        
+                    }
+                    // read score form player
+                    else if(msg.code == SCORE){
+                        addPlayerScore(i, msg.playerScore);
+                        nbScoreSended++;
                     }
                 }
             }
-
         }
 
-        /// ------------------------------------------------ ///
-
-        printf("%d\n", nbPLayers);
-        
-        // reccupere le rest des scores 
-        while (nbPlayersScoreSended != nbPLayers) {
-            poll(fds, nbPLayers, 0);
-
-            for (int j = 0; j < nbPLayers; ++j)
-            {
-                if (fds[j].revents & POLLIN) {
-                    sread(tabClients[j].pipefdChild[0], &msg, sizeof(msg)); 
-                    addPlayerScore(j, msg.playerScore);
-                    nbPlayersScoreSended++;
-                }
-            }
-        }
 
         printf("CALCULE DES SCORE ... \n");
         sortPlayerScore();
 
+        // wait every child 
         for (int i = 0; i < nbPLayers; ++i)
         {
             swait(NULL);
         }
 
-
+        // clean all pipe
         for (int i = 0; i < nbPLayers; ++i)
         {
             sclose(tabClients[i].pipefdParent[1]); 
             sclose(tabClients[i].pipefdChild[0]); 
         }
 
-        clearSharedMemory();
+        clearSharedMemory(); // clear memory
 
-        sclose(sockfd); // fermeture du scoket server
+        sclose(sockfd); // close server socket
         
     }
     

@@ -1,16 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/socket.h>
-
-#include "utils_v1.h"
-#include "messages.h"
-#include "network.h"
-#include "jeu.h"
+#include "ipc.h"
 
 
 
@@ -48,14 +36,6 @@ void addPlayer(char* pseudo){
 
 
 // USE END
-
-
-
-
-
-
-
-
 
 
 
@@ -104,12 +84,6 @@ void sortPlayerScore(){
 
    sshmdt(tab);
 }
-
-
-
-
-
-
 
 void clearSharedMemory(){
     int sem_id = sem_get(SEM_KEY, 1);

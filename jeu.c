@@ -1,18 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <time.h>
-
-#include "utils_v1.h"
-#include "network.h"
 #include "jeu.h"
-#include "messages.h"
-
 
 void createTiles(int* tilesTab) 
 {

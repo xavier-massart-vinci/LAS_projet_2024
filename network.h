@@ -1,3 +1,13 @@
+#ifndef _NETWORK_H_
+#define _NETWORK_H_
+
+#include "messages.h"
+#include "jeu.h"
+
+
+#define BACKLOG 5
+#define SERVER_PORT 9502
+#define SERVER_IP "127.0.0.1" /* localhost */
 
 
 
@@ -17,3 +27,9 @@ int initSocketClient(char *serverIP, int serverPort);
  * RES:  return socket file descriptor
  */
 int initSocketServer(int port);
+
+
+void selectAndSendTile(Client* tabClients, int nbPlayers, int* tilesTab, int currentRound);
+
+
+#endif

@@ -1,12 +1,4 @@
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
-
-#include "messages.h"
-#include "utils_v1.h"
-
-#define BACKLOG 5
+#include "network.h"
 
 
 int initSocketClient(char *serverIP, int serverPort)
@@ -35,4 +27,22 @@ int initSocketServer(int port)
 
     /* no listen error */
     return sockfd;
+}
+
+
+// send to very player the tuils
+void selectAndSendTile(Client* tabClients, int nbPlayers, int* tilesTab, int currentRound)
+{
+    Message msg;
+
+    // prepare message 
+    msg.code = TUILE_PIOCHEE;
+    msg.tileTake = getRandomTile(tilesTab, TILES_TAB_SIZE - currentRound);
+
+    // send to all player tile
+    for (int j = 0; j < nbPlayers; ++j)
+    {
+        // send TUILE_PIOCHEE
+        swrite(tabClients[j].pipefdParent[1], &msg, sizeof(msg));
+    }
 }
