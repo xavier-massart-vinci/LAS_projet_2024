@@ -210,14 +210,12 @@ int main(int argc, char const *argv[])
         printf("CALCULE DES SCORE ... \n");
         sortPlayerScore();
 
-        int sem_id = sem_get(SEM_KEY, 1);
-        printf("Server Valeur : %d\n", semctl(sem_id, 0, GETVAL));
-        /*
         for (int i = 0; i < nbPLayers; ++i)
         {
             swait(NULL);
         }
-        */
+
+        clearSharedMemory();
         
     }
     
@@ -240,7 +238,6 @@ void childProcess(void *arg1)
     // Game Loop
     for (int i = 0; i < NB_ROUND; ++i)
     {
-        
         // wait TUILE_PIOCHEE
         sread(client->pipefdParent[0], &msg, sizeof(msg));
         // send TUILE_PIOCHEE
@@ -252,6 +249,7 @@ void childProcess(void *arg1)
     }
 
 
+
     // Score 
     
     // wait SCORE
@@ -259,27 +257,16 @@ void childProcess(void *arg1)
     // send SCORE
     swrite(client->pipefdChild[1], &msg, sizeof(msg)); 
 
-    // wait RANK
-    sread(client->pipefdParent[0], &msg, sizeof(msg));
 
+    // send RANK
+    TabPlayer* tabPlayer = readTabPlayer();
 
-
-
-    // send RANK;
-
-    int sem_id = sem_get(SEM_KEY, 1);
-
-    // blocked wait server
-    sem_down0(sem_id);
-    //printf("Avant Valeur : %d\n", semctl(sem_id, 0, GETVAL));
-    TabPlayer* tabPlayer = getTabPlayer();
-    //printf("Apres Valeur : %d\n", semctl(sem_id, 0, GETVAL));
-
-    //printf("Read to send %d \n", tabPlayer->nbrPlayer);
     msg.tabPlayer = *tabPlayer;
     swrite(client->sockfd, &msg, sizeof(msg));
 
     sshmdt(tabPlayer);
 
 
+    exit(0);
 }
+

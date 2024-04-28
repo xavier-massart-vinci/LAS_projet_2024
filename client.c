@@ -89,9 +89,8 @@ int main(int argc, char const *argv[])
 
     // wait RANK
     sread(sockfd, &msg, sizeof(msg));
-    printf("Score readed\n");
-    TabPlayer tab = msg.tabPlayer;
 
+    TabPlayer tab = msg.tabPlayer;
     for (int i = 0; i < tab.nbrPlayer; ++i)
     {
         Player player = (tab.tabPlayer)[i];
