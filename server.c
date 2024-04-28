@@ -175,7 +175,6 @@ int main(int argc, char const *argv[])
                             nbPlayersPlayed++;
                         }
 
-
                         // recuppere les score envoyer quand tout le monde a pas envoyer sont derniere tuile placer
                         if(msg.code == SCORE){
                             addPlayerScore(j, msg.playerScore);
@@ -215,7 +214,16 @@ int main(int argc, char const *argv[])
             swait(NULL);
         }
 
+
+        for (int i = 0; i < nbPLayers; ++i)
+        {
+            sclose(tabClients[i].pipefdParent[1]); 
+            sclose(tabClients[i].pipefdChild[0]); 
+        }
+
         clearSharedMemory();
+
+        sclose(sockfd); // fermeture du scoket server
         
     }
     
@@ -265,6 +273,12 @@ void childProcess(void *arg1)
     swrite(client->sockfd, &msg, sizeof(msg));
 
     sshmdt(tabPlayer);
+
+
+    // close
+    sclose(client->sockfd); // je ne comunique plus
+    sclose(client->pipefdChild[1]); // je n'ecriverais plus
+    sclose(client->pipefdParent[0]); // j'ecoute plus 
 
 }
 
