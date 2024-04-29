@@ -54,10 +54,9 @@ int main(int argc, char const *argv[])
 
         while (!end_inscriptions)
         {
-            /* client trt */
-            newsockfd = accept(sockfd, NULL, NULL); // saccept() exit le programme si accept a été interrompu par l'alarme
+            newsockfd = accept(sockfd, NULL, NULL);
 
-            if (newsockfd > 0) /* no error on accept */
+            if (newsockfd > 0)
             {
                 sread(newsockfd, &msg, sizeof(msg));
 
@@ -76,7 +75,7 @@ int main(int argc, char const *argv[])
                         nbPlayers++;
                         if (nbPlayers == MAX_PLAYERS)
                         {
-                            alarm(0); // cancel alarm
+                            alarm(0);
                             end_inscriptions = 1;
                         }
                     }
