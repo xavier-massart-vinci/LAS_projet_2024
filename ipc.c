@@ -85,6 +85,21 @@ void sortPlayerScore(){
    sshmdt(tab);
 }
 
+
+void cleanSHM(){
+    TabPlayer* tab = getTabPlayer();
+
+    for (int i = 0; i < tab->nbrPlayer; ++i)
+    {
+        tab->tabPlayer[i].pseudo[0] = '\0';// js si c'est legal
+        tab->tabPlayer[i].score = 0;
+    }
+
+    tab->nbrPlayer = 0;
+
+    sshmdt(tab);
+}
+
 void clearSharedMemory(){
     int sem_id = sem_get(SEM_KEY, 1);
     int shm_id = sshmget(SHEM_KEY, sizeof(TabPlayer),  PERM);

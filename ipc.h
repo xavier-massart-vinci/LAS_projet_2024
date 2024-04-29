@@ -29,6 +29,7 @@ void sortPlayerScore();
 void clearPlayerScore();
 void clearSharedMemory();
 
+void cleanSHM();
 #endif
 
 
