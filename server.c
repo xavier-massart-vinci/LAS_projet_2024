@@ -35,6 +35,7 @@ int main(int argc, char const *argv[])
 
     createIPC();
 
+    //TODO FUNCTION
     sigset_t set;
     initSig(&set);
 
@@ -104,6 +105,7 @@ int main(int argc, char const *argv[])
         }
         else
         {
+            //C'EST CASSE
             setupTiles(tilesTab, &readedLine);
 
             struct pollfd fds[MAX_PLAYERS];
@@ -158,7 +160,7 @@ int main(int argc, char const *argv[])
                 }
             }
 
-            printf("Génrération du leaderboard ... \n");
+            printf("Génération du leaderboard ... \n");
             sortPlayerScore();
 
             // wait every child
@@ -222,27 +224,27 @@ void childProcess(void *arg1)
 
 void setupTiles(int *tilesTab, int *readedLine)
 {
-    char *currentLigne;
-
-    // when tiles is gave
-    if ((currentLigne = readLine()) != NULL)
+    // Tiles with file
+    char *currentLine;
+    if (isatty(STDIN_FILENO) == 0) // return 0 if stdin is a file
     {
+        currentLine = readLine();
         for (int i = 0; i < NB_ROUND; i++)
         {
             (*readedLine)++;
-            tilesTab[i] = atoi(currentLigne);
-            currentLigne = readLine();
+            tilesTab[i] = atoi(currentLine);
+            currentLine = readLine();
         }
     }
     else
     {
-        // normal gen
+        // Normal tiles gene
         int defautTiles[TILES_TAB_SIZE];
         createTiles(defautTiles);
 
         for (size_t i = 0; i < NB_ROUND; i++)
         {
-            defautTiles[i] = getRandomTile(defautTiles, TILES_TAB_SIZE - i);
+            tilesTab[i] = getRandomTile(defautTiles, TILES_TAB_SIZE - i);
         }
     }
 }
@@ -294,7 +296,8 @@ void initClients(Client *clients, int nbPlayers, struct pollfd *fds, Message *ms
     }
 }
 
-void initSig(sigset_t *set)
+
+void initSig(sigset_t* set)
 {
     ssigemptyset(set);
     sigaddset(set, SIGINT);

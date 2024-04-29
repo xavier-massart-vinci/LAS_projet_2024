@@ -8,18 +8,13 @@
 
 int main(int argc, char const *argv[])
 {
-    char pseudo[MAX_PSEUDO];
     int sockfd;
-    int ret;
-
     Message msg;
 
     /* retrieve player name */
     printf("Bienvenue dans le programe d'inscription au serveur de jeu\n");
     printf("Pour participer entrez votre nom :\n");
-    ret = sread(0, pseudo, MAX_PSEUDO);
-    checkNeg(ret, "read client error");
-    pseudo[ret - 1] = '\0';
+    char* pseudo = readLine();
     strcpy(msg.pseudo, pseudo);
     msg.code = INSCRIPTION_REQUEST;
 
