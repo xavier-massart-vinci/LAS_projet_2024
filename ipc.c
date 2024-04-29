@@ -10,7 +10,7 @@ void createIPC()
     sshmget(SHEM_KEY, sizeof(TabPlayer), IPC_CREAT | IPC_EXCL | PERM);
 }
 
-TabPlayer *getTabPlayer()
+TabPlayer* getTabPlayer()
 {
     int shm_id = sshmget(SHEM_KEY, sizeof(TabPlayer), PERM);
     return (TabPlayer *)sshmat(shm_id);

@@ -9,7 +9,7 @@
 
 #define POINTS_TAB (int[20]){ 0, 1, 3, 5, 7, 9, 11, 15, 20, 25, 30, 35, 40, 50, 60, 70, 85, 100, 150, 300 }
 #define TILES_TAB_SIZE 40
-#define NB_ROUND 5
+#define NB_ROUND 20
 
 /**
  * PRE: tilesTab : a pointer to an array of integers.
