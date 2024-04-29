@@ -52,9 +52,9 @@ int main(int argc, char const *argv[])
 
         while (!end_inscriptions)
         {
-            newsockfd = accept(sockfd, NULL, NULL); 
+            newsockfd = accept(sockfd, NULL, NULL);
 
-            if (newsockfd > 0) 
+            if (newsockfd > 0)
             {
                 sread(newsockfd, &msg, sizeof(msg));
 
@@ -73,7 +73,7 @@ int main(int argc, char const *argv[])
                         nbPlayers++;
                         if (nbPlayers == MAX_PLAYERS)
                         {
-                            alarm(0); 
+                            alarm(0);
                             end_inscriptions = 1;
                         }
                     }

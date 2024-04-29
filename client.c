@@ -8,6 +8,12 @@
 
 int main(int argc, char const *argv[])
 {
+    if (argc < 2)
+    {
+        printf("error of use : %s [port] \n", argv[0]);
+        exit(1);
+    }
+
     int sockfd;
     Message msg;
 
@@ -18,7 +24,7 @@ int main(int argc, char const *argv[])
     strcpy(msg.pseudo, pseudo);
     msg.code = INSCRIPTION_REQUEST;
 
-    sockfd = initSocketClient(SERVER_IP, SERVER_PORT);
+    sockfd = initSocketClient(SERVER_IP, atoi(argv[1]));
 
     swrite(sockfd, &msg, sizeof(msg));
     free(pseudo);
