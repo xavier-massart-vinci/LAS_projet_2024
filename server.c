@@ -40,6 +40,17 @@ int main(int argc, char const *argv[])
         exit(1);
     }
     */
+    // creation des tuiles (tableau ) !!! 40 = joker (tab commence à 0) !!!
+    int tilesTab[TILES_TAB_SIZE];
+
+
+    if(argc == 3){
+        for (int i = 0; i < NB_ROUND; ++i)
+        {
+            char* currentLigne = readLine();
+            tilesTab[0] = atoi(currentLigne);
+        }
+    }
 
     int port = SERVER_PORT;// atoi(argv[1]);
 
@@ -63,6 +74,23 @@ int main(int argc, char const *argv[])
 
 
     while(!end){
+
+        // when no file is give
+        if(argc != 3){
+            int defautlTiles[TILES_TAB_SIZE];
+            createTiles(defautlTiles);
+
+            int indexTilesTab = 0;
+
+            for (int i = 0; i < NB_ROUND; ++i)
+            {
+                tilesTab[indexTilesTab] = getRandomTile(defautlTiles, TILES_TAB_SIZE - i);
+                printf("TAB create => %d \n", tilesTab[indexTilesTab]);
+                indexTilesTab++;
+            }
+        }
+
+
         end_inscriptions = 0;
         Message msg;
         int newsockfd, i = 0;
@@ -164,10 +192,9 @@ int main(int argc, char const *argv[])
                 fds[i].events = POLLIN;
             }
 
-            // creation des tuiles (tableau ) !!! 40 = joker (tab commence à 0) !!!
-            int tilesTab[TILES_TAB_SIZE];
 
-            createTiles(tilesTab);
+
+
 
             // Main
             // current game round
@@ -179,7 +206,7 @@ int main(int argc, char const *argv[])
 
 
             // init the first round
-            selectAndSendTile(tabClients, nbPLayers, tilesTab, currentRound);
+            sendTile(tabClients, nbPLayers, tilesTab[currentRound]);
             
             while (currentRound != NB_ROUND || nbScoreSended != nbPLayers){
                 spoll(fds, nbPLayers, 0);
@@ -199,7 +226,8 @@ int main(int argc, char const *argv[])
                             if(currentPlayerPlayed == nbPLayers){
                                 currentRound++;
                                 currentPlayerPlayed = 0;
-                                selectAndSendTile(tabClients, nbPLayers, tilesTab, currentRound);
+                                sendTile(tabClients, nbPLayers, tilesTab[currentRound]);
+                                printf("Tile choose %d\n", tilesTab[currentRound]);
                             }
                         }
                         // read score form player

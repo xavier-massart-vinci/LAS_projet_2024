@@ -29,7 +29,7 @@ int initSocketClient(char *serverIP, int serverPort);
 int initSocketServer(int port);
 
 
-void selectAndSendTile(Client* tabClients, int nbPlayers, int* tilesTab, int currentRound);
+void sendTile(Client* tabClients, int nbPlayers, int tilesChose);
 
 
 #endif

@@ -1,5 +1,7 @@
 #include "jeu.h"
 
+
+
 void createTiles(int* tilesTab) 
 {
 
@@ -49,3 +51,6 @@ int getRandomTile(int* tilesTab, int nbRemainingTiles)
     }
     return -1;
 }
+
+
+

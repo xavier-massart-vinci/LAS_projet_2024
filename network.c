@@ -31,13 +31,13 @@ int initSocketServer(int port)
 
 
 // send to very player the tuils
-void selectAndSendTile(Client* tabClients, int nbPlayers, int* tilesTab, int currentRound)
+void sendTile(Client* tabClients, int nbPlayers, int tilesChose)
 {
     Message msg;
 
     // prepare message 
     msg.code = TUILE_PIOCHEE;
-    msg.tileTake = getRandomTile(tilesTab, TILES_TAB_SIZE - currentRound);
+    msg.tileTake = tilesChose;
 
     // send to all player tile
     for (int j = 0; j < nbPlayers; ++j)
