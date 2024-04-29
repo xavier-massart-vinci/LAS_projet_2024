@@ -46,18 +46,15 @@ int main(int argc, char const *argv[])
         int newsockfd, i = 0;
         int nbPlayers = 0;
 
-        // reset IPC
         resetSHM();
 
-        // INSCRIPTION PART
         alarm(TIME_INSCRIPTION);
 
         while (!end_inscriptions)
         {
-            /* client trt */
-            newsockfd = accept(sockfd, NULL, NULL); // saccept() exit le programme si accept a été interrompu par l'alarme
+            newsockfd = accept(sockfd, NULL, NULL); 
 
-            if (newsockfd > 0) /* no error on accept */
+            if (newsockfd > 0) 
             {
                 sread(newsockfd, &msg, sizeof(msg));
 
@@ -76,7 +73,7 @@ int main(int argc, char const *argv[])
                         nbPlayers++;
                         if (nbPlayers == MAX_PLAYERS)
                         {
-                            alarm(0); // cancel alarm
+                            alarm(0); 
                             end_inscriptions = 1;
                         }
                     }
@@ -112,15 +109,10 @@ int main(int argc, char const *argv[])
 
             initClients(tabClients, nbPlayers, fds, &msg);
 
-            // Main
-            // current game round
             int currentRound = 0;
-            // the number of the current player have playeing in the current round
             int currentPlayerPlayed = 0;
-            // the number of player (who have send they score)
             int nbScoreSended = 0;
 
-            // init the first round
             sendTile(tabClients, nbPlayers, tilesTab[currentRound]);
 
             while (currentRound != NB_ROUND || nbScoreSended != nbPlayers)
@@ -129,10 +121,8 @@ int main(int argc, char const *argv[])
 
                 for (int i = 0; i < nbPlayers; ++i)
                 {
-                    // listenner of filedescriptor
                     if (fds[i].revents & POLLIN)
                     {
-                        // read the current reauets message
                         sread(tabClients[i].pipefdChild[0], &msg, sizeof(msg));
 
                         if (msg.code == TUILE_PLACEE)
@@ -147,7 +137,6 @@ int main(int argc, char const *argv[])
                                 sendTile(tabClients, nbPlayers, tilesTab[currentRound]);
                             }
                         }
-                        // read score form player
                         else if (msg.code == SCORE)
                         {
                             addPlayerScore(i, msg.playerScore);
@@ -183,6 +172,10 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
+/**
+ * PRE:  arg1: a pointer to a Client object
+ * POST: start the child process of the server
+ */
 void childProcess(void *arg1)
 {
     Client *client = arg1;
@@ -212,18 +205,21 @@ void childProcess(void *arg1)
     msg.tabPlayer = *tabPlayer;
     swrite(client->sockfd, &msg, sizeof(msg));
 
-    // close
     sshmdt(tabPlayer);
     sclose(client->sockfd);
     sclose(client->pipefdChild[1]);
     sclose(client->pipefdParent[0]);
 }
 
+/**
+ * PRE:  tilesTab: a pointer to an array of integers
+ * POST: generates the tiles for the game
+ */
 void setupTiles(int *tilesTab)
 {
     char* currentLine = readLine();
-    // Tiles gen with file
-    if (currentLine != NULL && isatty(STDIN_FILENO) == 0) // return 0 if stdin is a file
+
+    if (currentLine != NULL && isatty(STDIN_FILENO) == 0) 
     {
         tilesTab[0] = atoi(currentLine);
         free(currentLine);
@@ -236,7 +232,6 @@ void setupTiles(int *tilesTab)
     }else{
         free(currentLine);
 
-        // Normal tiles gen
         int defautTiles[TILES_TAB_SIZE];
         createTiles(defautTiles);
 
@@ -248,11 +243,21 @@ void setupTiles(int *tilesTab)
     
 }
 
+/**
+ * PRE:  sig: a signal
+ * POST: set end_inscriptions to 1
+ 
+ */
 void endServerHandler(int sig)
 {
     end_inscriptions = 1;
 }
 
+/**
+ * PRE:  tabClients: a pointer to an array of Client structures
+ *       nbPlayers: the number of players
+ * POST: disconnects all players
+ */
 void disconnect_players(Client *tabClients, int nbPlayers)
 {
     for (int i = 0; i < nbPlayers; i++)
@@ -261,30 +266,37 @@ void disconnect_players(Client *tabClients, int nbPlayers)
     }
 }
 
+/**
+ * PRE:  sig: a signal
+ * POST: set end to 1
+ */
 void endServerHandlerEnd(int sig)
 {
     end = 1;
 }
 
+/**
+ * PRE:  clients: a pointer to an array of Client structures
+ *       nbPlayers: the number of players
+ *       fds: a pointer to an array of pollfd structures
+ *       msg: a pointer to a Message structure
+ * POST: initializes the clients
+ */
 void initClients(Client *clients, int nbPlayers, struct pollfd *fds, Message *msg)
 {
-    // pour tout les clients
     for (int i = 0; i < nbPlayers; ++i)
     {
-        // envoie début de partie à tabClients[i]
+        // send start game to tabClients[i]
         swrite(tabClients[i].sockfd, &msg, sizeof(msg));
 
-        // Création des pipes
         // Parent: parent -> child
         spipe(tabClients[i].pipefdParent);
 
         // Child: child -> parent
         spipe(tabClients[i].pipefdChild);
 
-        // Création d'un processus fils
         pid_t childPid = fork_and_run1(childProcess, &tabClients[i]);
 
-        // Configuration des pipes
         sclose(tabClients[i].pipefdParent[0]);
         sclose(tabClients[i].pipefdChild[1]);
         tabClients[i].childPid = childPid;
@@ -295,6 +307,10 @@ void initClients(Client *clients, int nbPlayers, struct pollfd *fds, Message *ms
     }
 }
 
+/**
+ * PRE:  set: a pointer to a sigset_t structure
+ * POST: initializes the signal set
+ */
 void initSig(sigset_t* set)
 {
     ssigemptyset(set);

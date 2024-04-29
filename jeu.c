@@ -116,8 +116,6 @@ int calculateScore(int *board)
     {
         if (board[i - 1] > board[i] || (board[i - 1] == 31 && board[i - 2] > board[i]))
         {
-            // calculer score
-
             score = score + POINTS_TAB[suite];
             suite = 0;
             continue;

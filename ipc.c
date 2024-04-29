@@ -67,7 +67,6 @@ void sortPlayerScore()
 
     qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
 
-    // fils peuvent lire
     for (int i = 0; i < tab->nbrPlayer; ++i)
     {
         sem_up0(sem_id);

@@ -84,43 +84,6 @@ int main(int argc, char const *argv[])
     TabPlayer tab = msg.tabPlayer;
     displayLeaderBoard(&tab);
 
-    /* end */
     sclose(sockfd);
     return 0;
-
-    /*
-    CONNECTION
-
-    demande pseudo
-    envoie pseudo serveur
-    reçoit réponse
-    */
-
-    /*
-    GAME
-
-    -> repeat 20 times (use ROUNDS)
-
-    attend msg qui dit qu'une tuile est tirée + la tuile
-    affiche la tuile reçu
-    choix de l'emplacement de la tuile
-    envoie la tuile au server
-    affiche la nouvelle grille du joueur
-    */
-
-    /*
-    END GAME
-
-    calcul du score
-    envoie du score au server
-    attente du leaderboard (RANK + tab)
-    affiche le leaderboard
-    */
-
-    /*
-    END
-
-    Ferme toutes les connections
-    se termine
-    */
 }
