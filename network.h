@@ -4,12 +4,9 @@
 #include "messages.h"
 #include "jeu.h"
 
-
 #define BACKLOG 5
 #define SERVER_PORT 9502
 #define SERVER_IP "127.0.0.1" /* localhost */
-
-
 
 /**
  * PRE: serverIP : a valid IP address
@@ -28,8 +25,12 @@ int initSocketClient(char *serverIP, int serverPort);
  */
 int initSocketServer(int port);
 
-
-void sendTile(Client* tabClients, int nbPlayers, int tilesChose);
-
+/**
+ * PRE:  tabClients: a pointer to an array of Client objects
+ *       nbPlayers: the number of players
+ *       tilesChose: the chosen tiles
+ * POST: Sends the chosen tiles to all clients
+ */
+void sendTile(Client *tabClients, int nbPlayers, int tilesChose);
 
 #endif

@@ -1,97 +1,84 @@
 #include "ipc.h"
 
-
-
-// USE START
-
-
-void semInit(){
+void createIPC()
+{
     sem_create(SEM_KEY, 1, PERM, 0);
-}
-
-void shmInit(){
     sshmget(SHEM_KEY, sizeof(TabPlayer), IPC_CREAT | IPC_EXCL | PERM);
 }
 
-
-TabPlayer* getTabPlayer(){
-    int shm_id = sshmget(SHEM_KEY, sizeof(TabPlayer),  PERM);
-
-    return (TabPlayer*) sshmat(shm_id);
+TabPlayer *getTabPlayer()
+{
+    int shm_id = sshmget(SHEM_KEY, sizeof(TabPlayer), PERM);
+    return (TabPlayer *)sshmat(shm_id);
 }
 
-
-//TODO check if nbrPlayer == MAX_PLAYER
-void addPlayer(char* pseudo){
-    TabPlayer* tab = getTabPlayer();
-
-    // write is name
+void addPlayer(char *pseudo)
+{
+    TabPlayer *tab = getTabPlayer();
     strcpy(tab->tabPlayer[tab->nbrPlayer].pseudo, pseudo);
-
- 
     (tab->nbrPlayer)++;
-
     sshmdt(tab);
 }
 
-
-// USE END
-
-
-
-// to detach
-TabPlayer* readTabPlayer(){
+TabPlayer *readTabPlayer()
+{
     int sem_id = sem_get(SEM_KEY, 1);
 
-    // blocked wait server
+    // Blocked until the server has finished writing in the shared memory
     sem_down0(sem_id);
-
-    TabPlayer* tab = (TabPlayer*) getTabPlayer();
-
+    TabPlayer *tab = (TabPlayer *)getTabPlayer();
     return tab;
 }
 
-
-void addPlayerScore(int playerIndex, int score){
-    TabPlayer* tab = getTabPlayer();
-
+void addPlayerScore(int playerIndex, int score)
+{
+    TabPlayer *tab = getTabPlayer();
     tab->tabPlayer[playerIndex].score = score;
+    sshmdt(tab);
+}
+
+int compare_scores(const void *a, const void *b)
+{
+    const struct Player *playerA = (const struct Player *)a;
+    const struct Player *playerB = (const struct Player *)b;
+    if (playerA->score == playerB->score)
+    {
+        return 0;
+    }
+    if (playerA->score > playerB->score)
+    {
+        return -1;
+    }
+
+    return 1;
+}
+
+void sortPlayerScore()
+{
+    int sem_id = sem_get(SEM_KEY, 1);
+
+    TabPlayer *tab = getTabPlayer();
+
+    Player *tabPlayer = tab->tabPlayer;
+
+    qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
+
+    // fils peuvent lire
+    for (int i = 0; i < tab->nbrPlayer; ++i)
+    {
+        sem_up0(sem_id);
+    }
 
     sshmdt(tab);
 }
 
-
-int compare_scores(const void *a, const void *b) {
-    const struct Player *playerA = (const struct Player *)a;
-    const struct Player *playerB = (const struct Player *)b;
-    return playerA->score - playerB->score;
-}
-
-void sortPlayerScore(){
-    int sem_id = sem_get(SEM_KEY, 1);
-
-    TabPlayer* tab = getTabPlayer();
-
-    Player* tabPlayer =  tab->tabPlayer;
-    
-    qsort(tabPlayer, tab->nbrPlayer, sizeof(Player), compare_scores);
-
-   // fils peuvent lire
-   for (int i = 0; i < tab->nbrPlayer; ++i)
-   {
-        sem_up0(sem_id);
-   }
-
-   sshmdt(tab);
-}
-
-
-void cleanSHM(){
-    TabPlayer* tab = getTabPlayer();
+void resetSHM()
+{
+    TabPlayer *tab = getTabPlayer();
 
     for (int i = 0; i < tab->nbrPlayer; ++i)
     {
-        tab->tabPlayer[i].pseudo[0] = '\0';// js si c'est legal
+        tab->tabPlayer[i].pseudo[0] = '\0';
         tab->tabPlayer[i].score = 0;
     }
 
@@ -100,10 +87,11 @@ void cleanSHM(){
     sshmdt(tab);
 }
 
-void clearSharedMemory(){
+void clearSHM()
+{
     int sem_id = sem_get(SEM_KEY, 1);
-    int shm_id = sshmget(SHEM_KEY, sizeof(TabPlayer),  PERM);
+    int shm_id = sshmget(SHEM_KEY, sizeof(TabPlayer), PERM);
 
-    sem_delete(sem_id);     
+    sem_delete(sem_id);
     sshmdelete(shm_id);
 }

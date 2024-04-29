@@ -8,28 +8,47 @@
 
 #define PERM 0600
 
+/**
+ * POST: A semaphore and a shared memory with their associated keys are created.
+ */
+void createIPC();
 
-//POST: creates a semaphore associated with key,
-void semInit();
+/**
+ * PRE: pseudo : the pseudo of the player to add.
+ * POST: The player has been added to the shared memory.
+ */
+void addPlayer(char *pseudo);
 
-void shmInit();
+/**
+ * RES: Returns a pointer to the TabPlayer object from the shared memory.
+ */
+TabPlayer *getTabPlayer();
 
+/**
+ * RES: Returns a pointer to the TabPlayer object from the shared memory.
+ */
+TabPlayer *readTabPlayer();
 
-void addPlayer(char* pseudo);
-
-TabPlayer* getTabPlayer();
-TabPlayer* readTabPlayer();
-// PRE : playerIndex : the index of score
-//       score : player score to add
-// POST: the score of player at index playerIndex has been added to shared memory
+/**
+ * PRE:  playerIndex : is the index of the player.
+ *       score : the player score to add.
+ * POST: The score of the player at index `playerIndex` has been added to the shared memory.
+ */
 void addPlayerScore(int playerIndex, int score);
 
+/**
+ * POST: The scores of the players in the shared memory are sorted.
+ */
 void sortPlayerScore();
 
-void clearPlayerScore();
-void clearSharedMemory();
+/**
+ * POST: The semaphore and the shared memory are destroyed.
+ */
+void resetSHM();
 
-void cleanSHM();
+/**
+ * POST: The shared memory is cleared.
+ */
+void clearSHM();
+
 #endif
-
-

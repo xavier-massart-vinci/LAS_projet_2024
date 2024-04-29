@@ -1,13 +1,11 @@
 #include "network.h"
 
-
 int initSocketClient(char *serverIP, int serverPort)
 {
     int sockfd = ssocket();
     sconnect(serverIP, serverPort, sockfd);
     return sockfd;
 }
-
 
 int initSocketServer(int port)
 {
@@ -25,17 +23,18 @@ int initSocketServer(int port)
     /* no bind error */
     slisten(sockfd, BACKLOG);
 
+    printf("Le serveur tourne sur le port : %i \n", port);
+
     /* no listen error */
     return sockfd;
 }
 
-
 // send to very player the tuils
-void sendTile(Client* tabClients, int nbPlayers, int tilesChose)
+void sendTile(Client *tabClients, int nbPlayers, int tilesChose)
 {
     Message msg;
 
-    // prepare message 
+    // prepare message
     msg.code = TUILE_PIOCHEE;
     msg.tileTake = tilesChose;
 

@@ -2,7 +2,6 @@
 #include "jeu.h"
 #include "network.h"
 
-
 int main(int argc, char const *argv[])
 {
     char pseudo[MAX_PSEUDO];
@@ -44,76 +43,70 @@ int main(int argc, char const *argv[])
     /* wait start of game or cancel */
     sread(sockfd, &msg, sizeof(msg));
 
-    if (msg.code == CANCEL_GAME) {
+    if (msg.code == CANCEL_GAME)
+    {
         printf("Partie annulée par manque de joueurs");
         sclose(sockfd);
         return 0;
     }
 
+    int board[NB_ROUND] = {0};
+    displayBoard(board);
+
     for (int i = 0; i < NB_ROUND; ++i)
     {
         Message msg;
-        int tilePlayed;
 
         // wait TUILE_PIOCHEE
         sread(sockfd, &msg, sizeof(msg));
 
         printf("\033[1;36mTuile %d piochée, veuillez choisir une case\033[0m\n", msg.tileTake);
-        char c = scanf("Tuile choisie : %d", &tilePlayed);
+        char* ligneRead = readLine();
+        int posPlayed = atoi(ligneRead);
 
         // send TUILE_PLACEE
+        placeTile(board, posPlayed, msg.tileTake);
         msg.code = TUILE_PLACEE;
         swrite(sockfd, &msg, sizeof(msg));
 
-        while ((c = getchar()) != '\n' && c != EOF);
+        displayBoard(board);
+        free(ligneRead);
     }
-
-    // calcule score
-    //TODO
 
     // send SCORE
     msg.code = SCORE;
-    msg.playerScore = 69;
+    msg.playerScore = calculateScore(board);
     swrite(sockfd, &msg, sizeof(msg));
 
     // wait RANK
     sread(sockfd, &msg, sizeof(msg));
 
     TabPlayer tab = msg.tabPlayer;
-    for (int i = 0; i < tab.nbrPlayer; ++i)
-    {
-        Player player = (tab.tabPlayer)[i];
-        printf("Pseudo: %s Score: %d \n", player.pseudo, player.score);
-
-    }
-
-
-
-
+    displayLeaderBoard(&tab);
 
     /* end */
     sclose(sockfd);
     return 0;
 
-    /* 
+    /*
     CONNECTION
-    
+
     demande pseudo
     envoie pseudo serveur
     reçoit réponse
-    */ 
+    */
 
     /*
     GAME
 
     -> repeat 20 times (use ROUNDS)
-    
+
     attend msg qui dit qu'une tuile est tirée + la tuile
     affiche la tuile reçu
     choix de l'emplacement de la tuile
     envoie la tuile au server
     affiche la nouvelle grille du joueur
-    */ 
+    */
 
     /*
     END GAME
@@ -126,7 +119,7 @@ int main(int argc, char const *argv[])
 
     /*
     END
-    
+
     Ferme toutes les connections
     se termine
     */
