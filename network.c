@@ -1,3 +1,7 @@
+/**
+ * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ */
+
 #include "network.h"
 
 int initSocketClient(char *serverIP, int serverPort)

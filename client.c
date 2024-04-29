@@ -1,3 +1,7 @@
+/**
+ * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ */
+
 #include "ipc.h"
 #include "jeu.h"
 #include "network.h"
@@ -61,7 +65,7 @@ int main(int argc, char const *argv[])
         sread(sockfd, &msg, sizeof(msg));
 
         printf("\033[1;36mTuile %d piochée, veuillez choisir une case\033[0m\n", msg.tileTake);
-        char* ligneRead = readLine();
+        char *ligneRead = readLine();
         int posPlayed = atoi(ligneRead);
 
         // send TUILE_PLACEE

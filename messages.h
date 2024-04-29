@@ -1,3 +1,7 @@
+/**
+ * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ */
+
 #ifndef _MESSAGE_H_
 #define _MESSAGE_H_
 

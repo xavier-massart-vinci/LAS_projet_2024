@@ -1,3 +1,7 @@
+/**
+ * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ */
+
 #ifndef _IPC_H_
 #define _IPC_H_
 

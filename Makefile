@@ -1,9 +1,9 @@
+## Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+
 CC=gcc
 CCFLAGS=-D_DEFAULT_SOURCE -D_XOPEN_SOURCE -D_BSD_SOURCE -std=c11 -pedantic -Wvla -Wall -Werror
 
 all: server client 
-
-
 
 ## server
 server : server.o jeu.o network.o ipc.o utils_v1.o
@@ -35,13 +35,9 @@ ipc.o: ipc.c utils_v1.h messages.h ipc.h
 utils_v1.o: utils_v1.c utils_v1.h
 	$(CC) $(CCFLAGS) -c utils_v1.c 
 
-
-
 ## clean
-clear :
-		clear
-
 clean :
 	rm -f *.o
 	rm -f server
 	rm -f client
+	clear

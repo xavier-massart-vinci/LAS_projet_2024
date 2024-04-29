@@ -1,3 +1,7 @@
+/**
+ * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ */
+
 #include "jeu.h"
 
 void createTiles(int *tilesTab)

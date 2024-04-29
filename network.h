@@ -1,3 +1,7 @@
+/**
+ * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ */
+
 #ifndef _NETWORK_H_
 #define _NETWORK_H_
 

@@ -1,3 +1,7 @@
+/**
+ * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ */
+
 #include "ipc.h"
 #include "jeu.h"
 #include "network.h"
@@ -8,13 +12,12 @@ volatile sig_atomic_t end_inscriptions = 0;
 volatile sig_atomic_t end = 0;
 
 void childProcess(void *arg1);
-void setupTiles(int* tilesTab, int* readedLine);
+void setupTiles(int *tilesTab, int *readedLine);
 void endServerHandler(int sig);
 void disconnect_players(Client *tabClients, int nbPlayers);
 void endServerHandlerEnd(int sig);
-void initClients(Client* clients, int nbPlayers, struct pollfd *fds, Message *msg);
+void initClients(Client *clients, int nbPlayers, struct pollfd *fds, Message *msg);
 void initSig(sigset_t *set);
-
 
 int main(int argc, char const *argv[])
 {
@@ -29,7 +32,7 @@ int main(int argc, char const *argv[])
     int port = atoi(argv[1]);
 
     int sockfd = initSocketServer(port);
-    
+
     createIPC();
 
     sigset_t set;
@@ -107,10 +110,8 @@ int main(int argc, char const *argv[])
 
             printf("PARTIE VA DEMARRER ... \n");
             msg.code = START_GAME;
-            
 
             initClients(tabClients, nbPlayers, fds, &msg);
-            
 
             // Main
             // current game round
@@ -219,7 +220,7 @@ void childProcess(void *arg1)
     sclose(client->pipefdParent[0]);
 }
 
-void setupTiles(int* tilesTab, int* readedLine)
+void setupTiles(int *tilesTab, int *readedLine)
 {
     char *currentLigne;
 
@@ -246,7 +247,6 @@ void setupTiles(int* tilesTab, int* readedLine)
     }
 }
 
-
 void endServerHandler(int sig)
 {
     end_inscriptions = 1;
@@ -265,14 +265,14 @@ void endServerHandlerEnd(int sig)
     end = 1;
 }
 
-
-void initClients(Client* clients, int nbPlayers, struct pollfd* fds, Message *msg){
+void initClients(Client *clients, int nbPlayers, struct pollfd *fds, Message *msg)
+{
     // pour tout les clients
     for (int i = 0; i < nbPlayers; ++i)
     {
         // envoie début de partie à tabClients[i]
         swrite(tabClients[i].sockfd, &msg, sizeof(msg));
-        
+
         // Création des pipes
         // Parent: parent -> child
         spipe(tabClients[i].pipefdParent);
@@ -292,14 +292,13 @@ void initClients(Client* clients, int nbPlayers, struct pollfd* fds, Message *ms
         fds[i].fd = tabClients[i].pipefdChild[0];
         fds[i].events = POLLIN;
     }
-
 }
-    
 
-void initSig(sigset_t* set){
+void initSig(sigset_t *set)
+{
     ssigemptyset(set);
     sigaddset(set, SIGINT);
 
     ssigaction(SIGALRM, endServerHandler);
-    ssigaction(SIGINT, endServerHandlerEnd); 
+    ssigaction(SIGINT, endServerHandlerEnd);
 }
