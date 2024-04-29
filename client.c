@@ -21,6 +21,7 @@ int main(int argc, char const *argv[])
     sockfd = initSocketClient(SERVER_IP, SERVER_PORT);
 
     swrite(sockfd, &msg, sizeof(msg));
+    free(pseudo);
 
     /* wait server response */
     sread(sockfd, &msg, sizeof(msg));
@@ -44,7 +45,7 @@ int main(int argc, char const *argv[])
 
     if (msg.code == CANCEL_GAME)
     {
-        printf("Partie annulée par manque de joueurs");
+        printf("Partie annulée par manque de joueurs\n");
         sclose(sockfd);
         return 0;
     }

@@ -12,7 +12,7 @@ volatile sig_atomic_t end_inscriptions = 0;
 volatile sig_atomic_t end = 0;
 
 void childProcess(void *arg1);
-void setupTiles(int *tilesTab, int *readedLine);
+void setupTiles(int *tilesTab);
 void endServerHandler(int sig);
 void disconnect_players(Client *tabClients, int nbPlayers);
 void endServerHandlerEnd(int sig);
@@ -28,14 +28,12 @@ int main(int argc, char const *argv[])
     }
 
     int tilesTab[TILES_TAB_SIZE];
-    int readedLine = 0;
     int port = atoi(argv[1]);
 
     int sockfd = initSocketServer(port);
 
     createIPC();
 
-    //TODO FUNCTION
     sigset_t set;
     initSig(&set);
 
@@ -105,8 +103,7 @@ int main(int argc, char const *argv[])
         }
         else
         {
-            //C'EST CASSE
-            setupTiles(tilesTab, &readedLine);
+            setupTiles(tilesTab);
 
             struct pollfd fds[MAX_PLAYERS];
 
@@ -222,31 +219,33 @@ void childProcess(void *arg1)
     sclose(client->pipefdParent[0]);
 }
 
-void setupTiles(int *tilesTab, int *readedLine)
+void setupTiles(int *tilesTab)
 {
-    // Tiles with file
-    char *currentLine;
-    if (isatty(STDIN_FILENO) == 0) // return 0 if stdin is a file
+    char* currentLine = readLine();
+    // Tiles gen with file
+    if (currentLine != NULL && isatty(STDIN_FILENO) == 0) // return 0 if stdin is a file
     {
-        currentLine = readLine();
-        for (int i = 0; i < NB_ROUND; i++)
+        tilesTab[0] = atoi(currentLine);
+        free(currentLine);
+        for (int i = 1; i < NB_ROUND; i++)
         {
-            (*readedLine)++;
-            tilesTab[i] = atoi(currentLine);
             currentLine = readLine();
+            tilesTab[i] = atoi(currentLine);
+            free(currentLine);
         }
-    }
-    else
-    {
-        // Normal tiles gene
+    }else{
+        free(currentLine);
+
+        // Normal tiles gen
         int defautTiles[TILES_TAB_SIZE];
         createTiles(defautTiles);
 
-        for (size_t i = 0; i < NB_ROUND; i++)
+        for (int i = 0; i < NB_ROUND; i++)
         {
             tilesTab[i] = getRandomTile(defautTiles, TILES_TAB_SIZE - i);
         }
     }
+    
 }
 
 void endServerHandler(int sig)
@@ -295,7 +294,6 @@ void initClients(Client *clients, int nbPlayers, struct pollfd *fds, Message *ms
         fds[i].events = POLLIN;
     }
 }
-
 
 void initSig(sigset_t* set)
 {

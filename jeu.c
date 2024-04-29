@@ -26,7 +26,7 @@ void createTiles(int *tilesTab)
     for (int i = 20; i <= 31; ++i)
     {
         tilesTab[k] = i;
-        k++;
+        k++;    
     }
 }
 
@@ -61,7 +61,7 @@ void displayLeaderBoard(TabPlayer *tabPlayer)
     for (int i = 0; i < tabPlayer->nbrPlayer; ++i)
     {
         Player player = (tabPlayer->tabPlayer)[i];
-        printf("Pseudo: %s Score: %d \n", player.pseudo, player.score);
+        printf("%d) %s avec %d points !\n", i+1, player.pseudo, player.score);
     }
 }
 
@@ -97,19 +97,13 @@ void displayBoard(int *board)
 
 void placeTile(int *board, int pos, int tile)
 {
-    pos = pos - 1;
-
-    if (board[pos] == 0)
+    if (board[pos-1] == 0)
     {
-        board[pos] = tile;
-    }
-    else if (pos + 1 == NB_ROUND)
-    {
+        board[pos-1] = tile;
+    } else if (pos == NB_ROUND) {
         placeTile(board, 1, tile);
-    }
-    else
-    {
-        placeTile(board, pos + 2, tile);
+    } else {
+        placeTile(board, pos + 1, tile);
     }
 }
 
