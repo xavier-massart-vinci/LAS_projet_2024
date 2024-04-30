@@ -1,5 +1,9 @@
 /**
- * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ * Authors: Debin Pierre-Alexandre
+ *          Devos Thibaut
+ *          Massart Xavier
+ *
+ *          Groupe 15
  */
 
 #include "ipc.h"
@@ -20,7 +24,7 @@ int main(int argc, char const *argv[])
     /* retrieve player name */
     printf("Bienvenue dans le programe d'inscription au serveur de jeu\n");
     printf("Pour participer entrez votre nom :\n");
-    char* pseudo = readLine();
+    char *pseudo = readLine();
     strcpy(msg.pseudo, pseudo);
     msg.code = INSCRIPTION_REQUEST;
 

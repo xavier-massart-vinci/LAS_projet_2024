@@ -1,5 +1,9 @@
 /**
- * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ * Authors: Debin Pierre-Alexandre
+ *          Devos Thibaut
+ *          Massart Xavier
+ * 
+ *          Groupe 15
  */
 
 #include "jeu.h"
@@ -40,18 +44,10 @@ void setupTiles(int *tilesTab, FILE **file)
     {
         if (*file && fscanf(*file, "%d", &num) == 1)
         {
-            printf("1) %d \n", num);
             tilesTab[i] = num;
         }
         else
         {
-            if (*file)
-            {
-                printf("2) %d \n", num);
-                fclose(*file);
-                *file = NULL;
-            }
-            printf("3) %d \n", num);
             tilesTab[i] = getRandomTile(defautTiles, TILES_TAB_SIZE - i);
         }
     }

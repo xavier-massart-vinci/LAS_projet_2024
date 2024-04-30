@@ -1,5 +1,9 @@
 /**
- * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ * Authors: Debin Pierre-Alexandre
+ *          Devos Thibaut
+ *          Massart Xavier
+ * 
+ *          Groupe 15
  */
 
 #ifndef _JEU_H_

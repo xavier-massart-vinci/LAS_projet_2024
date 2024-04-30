@@ -1,5 +1,9 @@
 /**
- * Authors: Debin Pierre-Alexandre, Devos Thibaut, Massart Xavier
+ * Authors: Debin Pierre-Alexandre
+ *          Devos Thibaut
+ *          Massart Xavier
+ *
+ *          Groupe 15
  */
 
 #include "ipc.h"
@@ -167,6 +171,8 @@ int main(int argc, char const *argv[])
         ssigprocmask(SIG_UNBLOCK, &set, NULL);
     }
 
+    fclose(*file);
+    *file = NULL;
     sclose(sockfd);
     clearSHM();
 
