@@ -32,29 +32,32 @@ void createTiles(int *tilesTab)
 
 void setupTiles(int *tilesTab, FILE **file)
 {
-    int num;
+    int num = 0;
     int defautTiles[TILES_TAB_SIZE];
     createTiles(defautTiles);
 
     for (int i = 0; i < NB_ROUND; i++)
     {
-        if (*file && fscanf(*file, "%d", &num) == 1 && num != 0)
+        if (*file && fscanf(*file, "%d", &num) == 1)
         {
+            printf("1) %d \n", num);
             tilesTab[i] = num;
         }
         else
         {
             if (*file)
             {
+                printf("2) %d \n", num);
                 fclose(*file);
                 *file = NULL;
             }
+            printf("3) %d \n", num);
             tilesTab[i] = getRandomTile(defautTiles, TILES_TAB_SIZE - i);
         }
     }
 }
 
-int getRandomTile(int *tilesTab, int nbRemainingTiles)
+int getRandomTile(int *defautTiles, int nbRemainingTiles)
 {
     srand(time(NULL));
 
@@ -65,12 +68,12 @@ int getRandomTile(int *tilesTab, int nbRemainingTiles)
     /* If the tiles is not set to 0, add 1 remainginTilePos */
     for (int i = 0; i < TILES_TAB_SIZE; i++)
     {
-        if (tilesTab[i] != 0)
+        if (defautTiles[i] != 0)
         {
             if (randomNumber == remainginTilePos)
             {
-                int ret = tilesTab[i];
-                tilesTab[i] = 0;
+                int ret = defautTiles[i];
+                defautTiles[i] = 0;
                 return ret;
             }
             remainginTilePos++;
