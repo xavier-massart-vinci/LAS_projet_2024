@@ -26,6 +26,13 @@ void createTiles(int *tilesTab);
 int getRandomTile(int *tilesTab, int nbRemainingTiles);
 
 /**
+ * PRE:  tilesTab: a pointer to an array of integers
+         file : the given file at server start
+ * POST: generates the tiles for the game
+ */
+void setupTiles(int *tilesTab, FILE **file);
+
+/**
  * PRE: tabPlayer : a pointer to a TabPlayer structure.
  * POST: The leaderboard is displayed in the console.
  */

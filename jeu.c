@@ -26,7 +26,31 @@ void createTiles(int *tilesTab)
     for (int i = 20; i <= 31; ++i)
     {
         tilesTab[k] = i;
-        k++;    
+        k++;
+    }
+}
+
+void setupTiles(int *tilesTab, FILE **file)
+{
+    int num;
+    int defautTiles[TILES_TAB_SIZE];
+    createTiles(defautTiles);
+
+    for (int i = 0; i < NB_ROUND; i++)
+    {
+        if (*file && fscanf(*file, "%d", &num) == 1 && num != 0)
+        {
+            tilesTab[i] = num;
+        }
+        else
+        {
+            if (*file)
+            {
+                fclose(*file);
+                *file = NULL;
+            }
+            tilesTab[i] = getRandomTile(defautTiles, TILES_TAB_SIZE - i);
+        }
     }
 }
 
@@ -61,7 +85,7 @@ void displayLeaderBoard(TabPlayer *tabPlayer)
     for (int i = 0; i < tabPlayer->nbrPlayer; ++i)
     {
         Player player = (tabPlayer->tabPlayer)[i];
-        printf("%d) %s avec %d points !\n", i+1, player.pseudo, player.score);
+        printf("%d) %s avec %d points !\n", i + 1, player.pseudo, player.score);
     }
 }
 
@@ -97,12 +121,16 @@ void displayBoard(int *board)
 
 void placeTile(int *board, int pos, int tile)
 {
-    if (board[pos-1] == 0)
+    if (board[pos - 1] == 0)
     {
-        board[pos-1] = tile;
-    } else if (pos == NB_ROUND) {
+        board[pos - 1] = tile;
+    }
+    else if (pos == NB_ROUND)
+    {
         placeTile(board, 1, tile);
-    } else {
+    }
+    else
+    {
         placeTile(board, pos + 1, tile);
     }
 }

@@ -12,7 +12,6 @@ volatile sig_atomic_t end_inscriptions = 0;
 volatile sig_atomic_t end = 0;
 
 void childProcess(void *arg1);
-void setupTiles(int *tilesTab);
 void endServerHandler(int sig);
 void disconnect_players(Client *tabClients, int nbPlayers);
 void endServerHandlerEnd(int sig);
@@ -31,6 +30,8 @@ int main(int argc, char const *argv[])
     int port = atoi(argv[1]);
 
     int sockfd = initSocketServer(port);
+
+    FILE *file = fopen(argv[2], "r");
 
     createIPC();
 
@@ -100,7 +101,7 @@ int main(int argc, char const *argv[])
         }
         else
         {
-            setupTiles(tilesTab);
+            setupTiles(tilesTab, &file);
 
             struct pollfd fds[MAX_PLAYERS];
 
@@ -212,41 +213,9 @@ void childProcess(void *arg1)
 }
 
 /**
- * PRE:  tilesTab: a pointer to an array of integers
- * POST: generates the tiles for the game
- */
-void setupTiles(int *tilesTab)
-{
-    char* currentLine = readLine();
-
-    if (currentLine != NULL && isatty(STDIN_FILENO) == 0) 
-    {
-        tilesTab[0] = atoi(currentLine);
-        free(currentLine);
-        for (int i = 1; i < NB_ROUND; i++)
-        {
-            currentLine = readLine();
-            tilesTab[i] = atoi(currentLine);
-            free(currentLine);
-        }
-    }else{
-        free(currentLine);
-
-        int defautTiles[TILES_TAB_SIZE];
-        createTiles(defautTiles);
-
-        for (int i = 0; i < NB_ROUND; i++)
-        {
-            tilesTab[i] = getRandomTile(defautTiles, TILES_TAB_SIZE - i);
-        }
-    }
-    
-}
-
-/**
  * PRE:  sig: a signal
  * POST: set end_inscriptions to 1
- 
+
  */
 void endServerHandler(int sig)
 {
@@ -311,7 +280,7 @@ void initClients(Client *clients, int nbPlayers, struct pollfd *fds, Message *ms
  * PRE:  set: a pointer to a sigset_t structure
  * POST: initializes the signal set
  */
-void initSig(sigset_t* set)
+void initSig(sigset_t *set)
 {
     ssigemptyset(set);
     sigaddset(set, SIGINT);

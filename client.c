@@ -29,6 +29,8 @@ int main(int argc, char const *argv[])
     swrite(sockfd, &msg, sizeof(msg));
     free(pseudo);
 
+    printf("En attente d'une réponse du serveur... \n");
+
     /* wait server response */
     sread(sockfd, &msg, sizeof(msg));
 
