@@ -171,8 +171,7 @@ int main(int argc, char const *argv[])
         ssigprocmask(SIG_UNBLOCK, &set, NULL);
     }
 
-    fclose(*file);
-    *file = NULL;
+    fclose(file);
     sclose(sockfd);
     clearSHM();
 

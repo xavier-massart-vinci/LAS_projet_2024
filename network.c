@@ -34,11 +34,11 @@ int initSocketServer(int port)
 
 void sendTile(Client *tabClients, int nbPlayers, int tilesChose)
 {
-    Message msg;
-
+    Message msg = {0};
     msg.code = TUILE_PIOCHEE;
     msg.tileTake = tilesChose;
 
+    // Send the message to all clients
     for (int j = 0; j < nbPlayers; ++j)
     {
         swrite(tabClients[j].pipefdParent[1], &msg, sizeof(msg));

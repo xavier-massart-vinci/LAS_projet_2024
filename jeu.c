@@ -34,9 +34,9 @@ void createTiles(int *tilesTab)
     }
 }
 
-void setupTiles(int *tilesTab, FILE *file)
+void setupTiles(int *tilesTab, FILE* file)
 {
-    int num = 0;
+    int num;
     int defautTiles[TILES_TAB_SIZE];
     createTiles(defautTiles);
 
