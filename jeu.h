@@ -34,7 +34,7 @@ int getRandomTile(int *tilesTab, int nbRemainingTiles);
          file : the given file at server start
  * POST: generates the tiles for the game
  */
-void setupTiles(int *tilesTab, FILE **file);
+void setupTiles(int *tilesTab, FILE *file);
 
 /**
  * PRE: tabPlayer : a pointer to a TabPlayer structure.

@@ -34,7 +34,7 @@ void createTiles(int *tilesTab)
     }
 }
 
-void setupTiles(int *tilesTab, FILE **file)
+void setupTiles(int *tilesTab, FILE *file)
 {
     int num = 0;
     int defautTiles[TILES_TAB_SIZE];
@@ -42,7 +42,7 @@ void setupTiles(int *tilesTab, FILE **file)
 
     for (int i = 0; i < NB_ROUND; i++)
     {
-        if (*file && fscanf(*file, "%d", &num) == 1)
+        if (file && fscanf(file, "%d", &num) == 1)
         {
             tilesTab[i] = num;
         }

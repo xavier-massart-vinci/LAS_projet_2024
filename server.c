@@ -105,7 +105,7 @@ int main(int argc, char const *argv[])
         }
         else
         {
-            setupTiles(tilesTab, &file);
+            setupTiles(tilesTab, file);
 
             struct pollfd fds[MAX_PLAYERS];
 
